@@ -103,20 +103,20 @@ function createCountry(region_detail) {
 ///
 function promiseGeoData(geoDataFunction) {
     const geo_url = 'https://www.parkrun.org.uk/wp-content/themes/parkrun/xml/geo.xml';
-        var geo_xml = '';
-        return new Promise((resolve, reject) => {
-            console.log(`GET request to [${geo_url}]`);
-            https.get(geo_url, (res) => {
-                res.setEncoding('utf8');
-                res.on('data', (chunk) => geo_xml += chunk);
-                res.on('end', () => {
-                    xml2js.parseString(geo_xml, (err, results) => {
-                        resolve(geoDataFunction(results));
-                    });
+    var geo_xml = '';
+    return new Promise((resolve, reject) => {
+        console.log(`GET request to [${geo_url}]`);
+        https.get(geo_url, (res) => {
+            res.setEncoding('utf8');
+            res.on('data', (chunk) => geo_xml += chunk);
+            res.on('end', () => {
+                xml2js.parseString(geo_xml, (err, results) => {
+                    resolve(geoDataFunction(results));
                 });
-                res.on('error', (e) => reject({ msg: "Failed to load parkrun geo.xml.", err: e }));
             });
+            res.on('error', (e) => reject({ msg: "Failed to load parkrun geo.xml.", err: e }));
         });
+    });
 }
 
 var geo = {
