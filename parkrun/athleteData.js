@@ -36,30 +36,48 @@ function getTextContentFromColumn(cols, index) {
     return undefined;
 }
 
-function getTextFromElement(element) {  
-    var textElements = element.children.filter(e => e.type === 'text');
-    if (textElements.length > 0) {
-        return textElements[0].data;
+function getTextFromElement(element) {
+    if (element.children) {
+        var textElements = element.children.filter(e => e.type === 'text');
+        if (textElements.length > 0) {
+            return textElements[0].data;
+        }
+        else {
+            return element.children.filter(e => e.type === 'tag').map(e => getTextFromElement(e))[0];
+        }
     }
-    else {
-        return element.children.filter(e => e.type === 'tag').map(e => getTextFromElement(e))[0];
+    return null;
+}
+
+function createAthlete(athleteId, dom) {
+    var resultsTable = findElementsInHtml(dom, 'table').filter(t => matchTableByCaption(t, 'All Results'));
+    var results = extractResults(resultsTable);
+
+    var name = extractName(dom);
+
+    return {
+        name: name,
+        id: athleteId,
+        results: results
     }
 }
 
-function createAthlete(results) {
-    return {
-        name: 'Dummy',
-        id: 123456,
-        results: results
+function extractName(dom) {
+    var h2Elements = findElementsInHtml(dom, 'h2');
+    if (h2Elements.length > 0) {
+        var nameText = getTextFromElement(h2Elements[0]);
+        if (nameText) {
+            return nameText.replace(/\ -\ .*/, '');
+        }
     }
+    return 'Unknown Athlete';
 }
 
 var athleteData = {
     loadHistory: (athleteId) => {
         return new Promise((resolve, reject) => {
             parkrunData.loadHtml(`https://www.parkrun.org.uk/results/athleteeventresultshistory/?athleteNumber=${athleteId}&eventNumber=0`).then((dom) => {
-                var resultsTable = findElementsInHtml(dom, 'table').filter(t => matchTableByCaption(t, 'All Results'));
-                resolve(createAthlete(extractResults(resultsTable)));
+                resolve(createAthlete(athleteId, dom));
             });
         }, (err) => {
             reject(err);
