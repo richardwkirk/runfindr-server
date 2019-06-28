@@ -13,7 +13,7 @@ function matchTableByCaption(table, caption) {
 function extractResults(table) {
     var tbodyElements = findElementsInHtml(table, 'tbody');
     var resultRows = findElementsInHtml([tbodyElements[0]], 'tr');
-    return resultRows.map(tr => createResult(tr));
+    return resultRows.map(tr => createResult(tr)).filter(r => !r.event.endsWith(' juniors'));
 }
 
 function createResult(row) {
