@@ -2,11 +2,13 @@
   "name": "runfindr-server",
   "version": "1.0.0",
   "description": "runfindr server",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
+    "build": "tsc",
+    "build-watch": "tsc --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index",
-    "dev": "nodemon index"
+    "start": "node dist/index.js",
+    "dev": "nodemon dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,7 @@
     "@types/node": "^12.6.8",
     "express": "^4.17.1",
     "htmlparser2": "^3.10.1",
+    "tslint": "^5.18.0",
     "xml2js": "^0.4.19"
   }
 }

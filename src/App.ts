@@ -20,9 +20,9 @@ class App {
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: false }));
 
-    this.express.use('/api/locations', require('../routes/api/locations'));
-    this.express.use('/api/countries', require('../routes/api/countries'));
-    this.express.use('/api/athletes', require('../routes/api/athletes'));
+    this.express.use('/api/locations', require('./routes/api/locations'));
+    this.express.use('/api/countries', require('./routes/api/countries'));
+    this.express.use('/api/athletes', require('./routes/api/athletes'));
   }
 
 }
