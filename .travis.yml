@@ -1,0 +1,26 @@
+dist: trusty
+sudo: false
+language: node_js
+node_js:
+- 10.15.3
+addons:
+  apt:
+    sources:
+    - google-chrome
+    packages:
+    - google-chrome-stable
+cache:
+  directories:
+  - "./node_modules"
+install:
+- npm install
+script:
+- npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+- npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
+deploy:
+  provider: heroku
+  api_key:
+    secure: it/ansmGpbOCWE2AeMxLF8DwdOeAgCC9zS2ys6BSzyFy18vzF9tyIUaOaGATMOA+rgNPC+cnEAWOXxqLZXLm7pQ+Q9pPgjqyCYtTLK43GKnYoKcvodpUx2AISeDGzvzJLZxXC8i1EJ3+Rux7eYzTLdMrF0f8C9LmqF2nossWSIZr8Irxn3r8FdGPHSeEctQfrP07m1TCn6uwkw8IihVGFyF65Vfyf03+ITkKAHPF3FtEq9kUDSFxdhhYQQs6/NpANwy4d9ulXDs/CL81Tm3kM21u/+tjbztY48tRnzayz6V9xwObCdesi8yv3whVkYHknaGlKxf41T0BKp5IhXXaAOIuI138RzMPvXvxFBQJHOxOKXlBk6pbAqVyIzcfMBO9YtF4JsxefqSBdFat14LCbxUthcTH8hhKS0jRuvdUqesVbGVv+3Vi26EvluDtL8kbVH+dxQ/TeX18qIu4qD5hVQY/Tw7cFLxG7UwihS/pwz9WHS0nKgEzoD0sKVYmrCowzcf51YCJpg5SDNxx5hiITiAoO/bvx6pr/bUn07FMxkxFZ1bw731IPCRJW6DhNAV0YkrusiuQbwYSWtLvPt/P+S6ILZ+Mzhp2DH4ZUqr72lJ/IAUodYl4wydtVt7d9SkFf/KxElbxQXxpK7f05/yNiOX5Cx78VybAmcgiK/k0GqU=
+  app:
+    master: runfindr-server-test
+    production: runfindr-server
