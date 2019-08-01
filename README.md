@@ -6,6 +6,12 @@ The current advantage of having a separation between the data source and web fro
 
 ---
 
+## parkrun data
+
+runfindr is not associated with the parkrun organisation. The runfindr projects are used to present parkrun data in different ways. No result data is stored for use beyond the reformatting of the data available through the [parkrun](https://www.parkrun.com) websites. This project is developed as a personal interest project to explore new technologies using an interesting subject matter.
+
+---
+
 ## Build
 
 Originally written in JavaScript, this project is being converted into Typescript. As a result the build process is currently in a state of flux.
