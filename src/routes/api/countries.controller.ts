@@ -1,5 +1,6 @@
 import * as express from "express";
 import { Controller } from "./controller";
+import { GeoDataLoader } from "../../parkrun/geo";
 
 export class CountriesController extends Controller {
 
@@ -12,14 +13,14 @@ export class CountriesController extends Controller {
   }
 
   private getCountries(req: express.Request, res: express.Response) {
-    const geo = require("../../parkrun/geo");
+    console.log(`Country list request.`);
 
-    console.log(`Country load request.`);
+    const geo = new GeoDataLoader();
 
-    geo.loadCountries().then((result) => {
-        res.json(result);
-    }, (err) => {
-        res.status(400).json(err);
-    });
+    geo.loadCountries().then((result: any) => {
+            res.json(result);
+        }, (err: any) => {
+            res.status(400).json(err);
+        });
   }
 }

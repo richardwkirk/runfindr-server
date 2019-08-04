@@ -1,5 +1,6 @@
 import * as express from "express";
 import { Controller } from "./controller";
+import { AthleteDataLoader } from '../../parkrun/athleteData';
 
 export class AthletesController extends Controller {
 
@@ -12,9 +13,10 @@ export class AthletesController extends Controller {
   }
 
   private getAthleteData(req: express.Request, res: express.Response) {
-    const athleteData = require("../../parkrun/athleteData");
-
     console.log(`Athlete history request for [${req.params.athleteId}]`);
+
+    let athleteData = new AthleteDataLoader();
+
     athleteData.loadHistory(req.params.athleteId).then((result) => {
         res.json(result);
     }, (err) => {

@@ -1,5 +1,6 @@
 import * as express from "express";
 import { Controller } from "./controller";
+import { GeoDataLoader } from "../../parkrun/geo";
 
 export class LocationsController extends Controller {
 
@@ -12,9 +13,9 @@ export class LocationsController extends Controller {
   }
 
   private getRegion(req: express.Request, res: express.Response) {
-    const geo = require("../../parkrun/geo");
-
     console.log(`Location request for [${req.params.region}]`);
+
+    const geo = new GeoDataLoader();
 
     geo.loadRegion(req.params.region).then((result: any) => {
             res.json(result);
