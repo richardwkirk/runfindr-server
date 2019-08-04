@@ -3,8 +3,6 @@ import { Controller } from "./controller";
 
 export class CountriesController extends Controller {
 
-  public router = express.Router();
-
   constructor() {
     super();
   }
@@ -16,7 +14,7 @@ export class CountriesController extends Controller {
   private getCountries(req: express.Request, res: express.Response) {
     const geo = require("../../parkrun/geo");
 
-    console.log(`Location request for [${req.params.region}]`);
+    console.log(`Country load request.`);
 
     geo.loadCountries().then((result) => {
         res.json(result);

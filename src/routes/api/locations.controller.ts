@@ -3,8 +3,6 @@ import { Controller } from "./controller";
 
 export class LocationsController extends Controller {
 
-  public router = express.Router();
-
   constructor() {
     super();
   }

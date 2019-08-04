@@ -1,6 +1,8 @@
 const https = require('https');
 const xml2js = require('xml2js');
 
+const parkrunData = require('./parkrunDataLoader');
+
 function matchRegion(regionDetail, regionName) {
     if (regionDetail && regionDetail.$) {
         //console.log(`Checking in region ${regionDetail.$.n}`)
@@ -80,7 +82,6 @@ function createCountryList(region_detail, geo) {
 }
 
 function createCountry(region_detail) {
-    console.log(region_detail);
     if (region_detail) {
         return {
             name: region_detail.$.n,
@@ -97,26 +98,31 @@ function createCountry(region_detail) {
     }
 }
 
-
 ///
 /// Common code to return results from geo data
 ///
 function promiseGeoData(geoDataFunction) {
     const geo_url = 'https://www.parkrun.org.uk/wp-content/themes/parkrun/xml/geo.xml';
-    var geo_xml = '';
     return new Promise((resolve, reject) => {
-        console.log(`GET request to [${geo_url}]`);
-        https.get(geo_url, (res) => {
-            res.setEncoding('utf8');
-            res.on('data', (chunk) => geo_xml += chunk);
-            res.on('end', () => {
-                xml2js.parseString(geo_xml, (err, results) => {
-                    resolve(geoDataFunction(results));
-                });
-            });
-            res.on('error', (e) => reject({ msg: "Failed to load parkrun geo.xml.", err: e }));
+        parkrunData.loadUrl(geo_url).then((data) => {
+            if (data) {
+                try {
+                    xml2js.parseString(data, (err, results) => {
+                        resolve(geoDataFunction(results));
+                    });
+                }
+                catch (err) {
+                    console.error("Failed to parse parkrun geo.xml", err);
+                    reject({ msg: "Failed to parse parkrun geo.xml.", err: err });
+                }
+            }
+            else {
+                reject({ msg: "No parkrun geo data loaded." });
+            }
         });
-    });
+    }, (err) => {
+        reject({ msg: "Failed to load parkrun geo.xml.", err: err });
+    });  
 }
 
 var geo = {

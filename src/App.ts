@@ -4,11 +4,11 @@ import { AthletesController } from "./routes/api/athletes.controller";
 import { CountriesController } from "./routes/api/countries.controller";
 import { LocationsController } from "./routes/api/locations.controller";
 
-class App {
-  public express;
+export class App {
+  public app: express.Application;
 
   constructor() {
-    this.express = express();
+    this.app = express();
     this.initMiddleware();
     this.initRoutes();
   }
@@ -21,23 +21,30 @@ class App {
 
   private initMiddleware(): void {
     // Cross origin support
-    this.express.use(this.corsMiddleware);
+    this.app.use(this.corsMiddleware);
 
     // Body parser middleware
-    this.express.use(express.json());
-    this.express.use(express.urlencoded({ extended: false }));
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: false }));
   }
 
   private initRoutes(): void {
-    this.addRoutes("/api/locations", new LocationsController());
-    this.addRoutes("/api/countries", new CountriesController());
     this.addRoutes("/api/athletes", new AthletesController());
+    this.addRoutes("/api/countries", new CountriesController());
+    this.addRoutes("/api/locations", new LocationsController());
   }
 
   private addRoutes(endpoint: string, controller: Controller) {
-    this.express.use("/api/locations", require("./routes/api/locations"));
+    this.app.use(endpoint, controller.router);
   }
 
+  public listen(port: number) {
+    this.app.listen(port, (err) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log(`Server started on port ${port}`);
+    });
+  }
 }
-
-export default new App().express;

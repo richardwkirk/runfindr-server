@@ -3,17 +3,15 @@ import { Controller } from "./controller";
 
 export class AthletesController extends Controller {
 
-  public router = express.Router();
-
   constructor() {
     super();
   }
 
   protected initRoutes(): void {
-    this.router.get("/:region", this.getRegion);
+    this.router.get("/history/:athleteId", this.getAthleteData);
   }
 
-  private getRegion(req: express.Request, res: express.Response) {
+  private getAthleteData(req: express.Request, res: express.Response) {
     const athleteData = require("../../parkrun/athleteData");
 
     console.log(`Athlete history request for [${req.params.athleteId}]`);

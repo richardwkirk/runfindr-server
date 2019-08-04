@@ -1,4 +1,4 @@
-const parkrunData = require('./parkrunDataLoader')
+const parkrunData = require('./parkrunDataLoader');
 
 function findElementsInHtml(dom, elementName) {
     const elements = dom.filter(n => n.type === 'tag');
