@@ -52,7 +52,8 @@ function getTextFromElement(element) {
 function createAthlete(athleteId, dom) {
     var resultsTable = findElementsInHtml(dom, 'table').filter(t => matchTableByCaption(t, 'All Results'));
     var results = extractResults(resultsTable);
-
+    results.reverse();
+    
     var name = extractName(dom);
 
     return {
