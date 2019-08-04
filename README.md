@@ -32,7 +32,7 @@ You can run the build either as a server:
 npm run start
 ````
 
-Or in dev mode using `nodemon` to automatically update when changes are made:
+Or in dev mode using `tsc-watch` to automatically update when changes are made:
 
 ```
 npm run dev
