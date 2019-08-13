@@ -21,7 +21,7 @@ export class AthleteDataLoader {
     private extractSummaries(table) {
         var tbodyElements = this.findElementsInHtml(table, "tbody");
         var resultRows = this.findElementsInHtml([tbodyElements[0]], "tr");
-        return resultRows.map(tr => this.createSummary(tr)).filter(r => !r.event.endsWith(" juniors"));
+        return resultRows.map(tr => this.createSummary(tr)).filter(r => !r.event.endsWith(" junior parkrun"));
     }
 
     private createResult(row) {
