@@ -18,6 +18,12 @@ export class AthleteDataLoader {
         return resultRows.map(tr => this.createResult(tr)).filter(r => !r.event.endsWith(' juniors'));
     }
 
+    private extractSummaries(table) {
+        var tbodyElements = this.findElementsInHtml(table, 'tbody');
+        var resultRows = this.findElementsInHtml([tbodyElements[0]], 'tr');
+        return resultRows.map(tr => this.createSummary(tr)).filter(r => !r.event.endsWith(' juniors'));
+    }
+
     private createResult(row) {
         var cols = this.findElementsInHtml([row], 'td');
         return {
@@ -27,6 +33,17 @@ export class AthleteDataLoader {
             position: parseInt(this.getTextContentFromColumn(cols, 3)),
             time: this.getTextContentFromColumn(cols, 4),
             ageGrading: this.getTextContentFromColumn(cols, 5),
+        }
+    }
+
+    private createSummary(row) {
+        var cols = this.findElementsInHtml([row], 'td');
+        return {
+            event: this.getTextContentFromColumn(cols, 0),
+            runs: parseInt(this.getTextContentFromColumn(cols, 1)),
+            bestGenderPosition: parseInt(this.getTextContentFromColumn(cols, 2)),
+            bestPosition: parseInt(this.getTextContentFromColumn(cols, 3)),
+            bestTime: this.getTextContentFromColumn(cols, 4),
         }
     }
 
@@ -51,17 +68,21 @@ export class AthleteDataLoader {
         return null;
     }
 
-    private createAthlete(athleteId, dom) {
-        var resultsTable = this.findElementsInHtml(dom, 'table').filter(t => this.matchTableByCaption(t, 'All Results'));
+    private createAthlete(athleteId, historyDom, summaryDom) {
+        var resultsTable = this.findElementsInHtml(historyDom, 'table').filter(t => this.matchTableByCaption(t, 'All Results'));
         var results = this.extractResults(resultsTable);
         results.reverse();
 
-        var name = this.extractName(dom);
+        var name = this.extractName(historyDom);
 
+        var tables = this.findElementsInHtml(summaryDom, 'table');
+        var summaries = tables && tables.length > 1  ? this.extractSummaries([ tables[1] ]) : [];
+    
         return {
             name: name,
             id: athleteId,
-            results: results
+            results: results,
+            summaries: summaries
         }
     }
 
@@ -80,8 +101,10 @@ export class AthleteDataLoader {
         return new Promise((resolve, reject) => {
             try {
                 const parkrunDataLoader = new ParkrunDataLoader();
-                parkrunDataLoader.loadHtml(`https://www.parkrun.org.uk/results/athleteeventresultshistory/?athleteNumber=${athleteId}&eventNumber=0`).then((dom) => {
-                    resolve(this.createAthlete(athleteId, dom));
+                parkrunDataLoader.loadHtml(`https://www.parkrun.org.uk/results/athleteeventresultshistory/?athleteNumber=${athleteId}&eventNumber=0`).then((historyDom) => {
+                    parkrunDataLoader.loadHtml(`https://www.parkrun.org.uk/results/athleteresultshistory/?athleteNumber=${athleteId}`).then((summaryDom) => {
+                        resolve(this.createAthlete(athleteId, historyDom, summaryDom));
+                    });
                 });
             }
             catch (err) {
