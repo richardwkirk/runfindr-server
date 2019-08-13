@@ -1,4 +1,4 @@
-import { ParkrunDataLoader } from "./ParkrunDataLoader";
+import { ParkrunDataLoader } from "./parkrunDataLoader";
 
 export class AthleteDataLoader {
 
