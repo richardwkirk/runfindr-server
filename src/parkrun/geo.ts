@@ -1,8 +1,8 @@
-const https = require('https');
-const xml2js = require('xml2js');
+const https = require("https");
+const xml2js = require("xml2js");
 
-import * as parkrun from '../parkrun/model/index.js'
-import { ParkrunDataLoader } from './parkrunDataLoader'
+import * as parkrun from "../parkrun/model/index.js";
+import { ParkrunDataLoader } from "./parkrunDataLoader";
 
 export class GeoDataLoader {
 
