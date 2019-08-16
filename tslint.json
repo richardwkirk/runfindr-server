@@ -9,7 +9,13 @@
     "rules": {
         "no-console": false,
         "ordered-imports": false,
-        "member-ordering": false
+        "member-ordering": false,
+        "interface-name": false,
+        "max-line-length": [true, 200],
+        "object-literal-shorthand": false,
+        "object-literal-sort-keys": false,
+        "trailing-comma": false,
+        "one-line": false
     },
     "rulesDirectory": []
 }

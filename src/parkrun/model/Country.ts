@@ -1,10 +1,20 @@
-import { Location } from './Location';
+import { Event } from "./Event";
+import { Location } from "./Location";
 
 export interface Country {
 
     name: string;
 
-    location: Location;
+    countryCode: number;
+
+    bounds: {
+        north: number,
+        east: number,
+        south: number,
+        west: number
+    };
+
+    events?: Event[];
 
     url: string;
 

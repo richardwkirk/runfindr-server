@@ -1,10 +1,16 @@
-import { Location } from './Location';
+import { Location } from "./Location";
 
 export interface Event {
 
-    name: string;
+    eventName: string;
 
-    shortname: string;
+    shortName: string;
+
+    longName: string;
+
+    id: number;
+
+    locationName: string;
 
     location: Location;
 

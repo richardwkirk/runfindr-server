@@ -1,6 +1,6 @@
 import * as express from "express";
 import { Controller } from "./controller";
-import { GeoDataLoader } from "../../parkrun/geo";
+import { EventDataLoader } from "../../parkrun/eventDataLoader";
 
 export class CountriesController extends Controller {
 
@@ -15,7 +15,7 @@ export class CountriesController extends Controller {
   private getCountries(req: express.Request, res: express.Response) {
     console.log(`Country list request.`);
 
-    const geo = new GeoDataLoader();
+    const geo = new EventDataLoader();
 
     geo.loadCountries().then((result: any) => {
             res.json(result);
