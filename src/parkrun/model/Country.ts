@@ -7,7 +7,7 @@ export interface Country {
 
     countryCode: number;
 
-    bounds: {
+    bounds?: {
         north: number,
         east: number,
         south: number,

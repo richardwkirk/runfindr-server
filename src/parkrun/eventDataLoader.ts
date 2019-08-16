@@ -99,7 +99,18 @@ export class EventDataLoader {
     public loadRegion(countryName): Promise<parkrun.Country> {
         const geoDataFunction = (allCountries) => {
             console.log(`Filtering for country ${countryName}`);
-            return allCountries.find((c) => c.name.toLowerCase() === countryName.toLowerCase());
+            if (countryName.toLowerCase() === "world") {
+                const world: parkrun.Country = {
+                    name: "World",
+                    countryCode: 0,
+                    url: "https://www.parkrun.com/",
+                    events: [].concat.apply([], allCountries.map(c => c.events))
+                };
+                return world;
+            }
+            else {
+                return allCountries.find((c) => c.name.toLowerCase() === countryName.toLowerCase());
+            }
         };
         return this.promiseGeoData<parkrun.Country>(geoDataFunction);
     }
