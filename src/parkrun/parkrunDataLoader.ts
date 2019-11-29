@@ -1,13 +1,13 @@
-const https = require('https');
-const htmlparser = require('htmlparser2');
+const https = require("https");
+const htmlparser = require("htmlparser2");
 
 const NodeCache = require( "node-cache" );
-const parkrunCache = new NodeCache({ stdTTL: 600, checkperiod: 120 });
+const parkrunCache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 
 export class ParkrunDataLoader {
 
     private promiseParkrunData(url) {
-        let data = '';
+        const data = "";
         return new Promise((resolve, reject) => {
             try {
                 parkrunCache.get(url, (err, value) => {
@@ -28,17 +28,17 @@ export class ParkrunDataLoader {
 
     private getParkrunData(url, resolve, reject) {
         console.log(`GET request to [${url}]`);
-        let data = '';
+        let data = "";
         https.get(url, (res) => {
-            res.setEncoding('utf8');
-            res.on('data', (chunk) => data += chunk);
-            res.on('end', () => {
+            res.setEncoding("utf8");
+            res.on("data", (chunk) => data += chunk);
+            res.on("end", () => {
                 parkrunCache.set(url, data);
                 resolve(data);
             });
-            res.on('error', (e) => {
+            res.on("error", (e) => {
                 console.error("Failed to get parkrun data", e);
-                reject({ msg: "Failed to get parkrun data.", err: e })
+                reject({ msg: "Failed to get parkrun data.", err: e });
             });
         });
     }
@@ -47,7 +47,7 @@ export class ParkrunDataLoader {
         return new Promise((resolve, reject) => {
             try {
                 this.promiseParkrunData(url).then((data) => {
-                    var handler = new htmlparser.DomHandler(function (err, dom) {
+                    const handler = new htmlparser.DomHandler(function(err, dom) {
                         if (err) {
                             reject(err);
                         }
@@ -55,7 +55,7 @@ export class ParkrunDataLoader {
                             resolve(dom);
                         }
                     });
-                    var parser = new htmlparser.Parser(handler);
+                    const parser = new htmlparser.Parser(handler);
                     parser.write(data);
                     parser.end();
                 });
@@ -64,13 +64,13 @@ export class ParkrunDataLoader {
                 console.log(`ERROR: ${err}`);
                 reject(err);
             }
-        });    
+        });
     }
 
     public loadUrl(url) {
         return this.promiseParkrunData(url);
     }
-    
+
     public loadHtml(url) {
         return this.promiseHtml(url);
     }

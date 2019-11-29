@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/richardwkirk/runfindr-server#readme",
   "dependencies": {
+    "@types/htmlparser2": "^3.10.1",
     "@types/node": "^12.6.8",
     "express": "^4.17.1",
     "htmlparser2": "^3.10.1",

@@ -1,6 +1,6 @@
 import * as express from "express";
 import { Controller } from "./controller";
-import { AthleteDataLoader } from '../../parkrun/athleteData';
+import { AthleteDataLoader } from "../../parkrun/athleteDataLoader";
 
 export class AthletesController extends Controller {
 

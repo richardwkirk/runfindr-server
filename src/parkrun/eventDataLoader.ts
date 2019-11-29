@@ -104,7 +104,7 @@ export class EventDataLoader {
                     name: "World",
                     countryCode: 0,
                     url: "https://www.parkrun.com/",
-                    events: [].concat.apply([], allCountries.map(c => c.events))
+                    events: [].concat.apply([], allCountries.map((c) => c.events))
                 };
                 return world;
             }

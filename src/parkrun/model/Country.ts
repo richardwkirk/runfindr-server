@@ -7,6 +7,8 @@ export interface Country {
 
     countryCode: number;
 
+    specialEvent?: string;
+
     bounds?: {
         north: number,
         east: number,
