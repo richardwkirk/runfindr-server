@@ -20,23 +20,66 @@ export class SpecialEventLoader {
     }
 
     private getEventTimesFromTable(tableBodyElement): { [url: string]: SpecialEventTimes } {
+        let columnIndexes = {};
+
+        let first = true;
         const eventTimes = {};
         const rowElements = HtmlParserHelper.findElementsInHtml(tableBodyElement.children, "tr");
         for (const row of rowElements) {
+
+            if (first)
+            {
+                columnIndexes = this.getColumnIndexesForSpecialEvents(row);
+                first = false;
+                continue;
+            }
+
             const dataElements = HtmlParserHelper.findElementsInHtml(row.children, "td");
-            if (dataElements.length >= 4) {
+            if (dataElements.length >= 2) {
                 const longName = HtmlParserHelper.getTextFromElement(dataElements[0]);
+                eventTimes[longName] = {};
+
                 if (longName) {
-                    const extra = this.getEventTime(HtmlParserHelper.getTextFromElement(dataElements[2]));
-                    const newyear = this.getEventTime(HtmlParserHelper.getTextFromElement(dataElements[3]));
-                    eventTimes[longName] = {
-                        extra: extra,
-                        newyear: newyear
-                    };
+                    this.addEventTimeForSpecialEvent(eventTimes[longName], columnIndexes, "extra", dataElements);
+                    this.addEventTimeForSpecialEvent(eventTimes[longName], columnIndexes, "newyear", dataElements);
                 }
             }
         }
         return eventTimes;
+    }
+
+    private addEventTimeForSpecialEvent(eventTimes: any, columnIndexes: any, type: string, dataElements: any) {
+        if (columnIndexes[type])
+        {
+            eventTimes[type] = this.getEventTime(HtmlParserHelper.getTextFromElement(dataElements[columnIndexes[type]]));
+        }
+    }
+
+    private getColumnIndexesForSpecialEvents(row: any): {} {
+        const columnIndexes = {};
+        const dataElements = HtmlParserHelper.findElementsInHtml(row.children, "th");
+        for (let i = 2; i < dataElements.length; ++i)
+        {
+            const type = this.isNewYear(HtmlParserHelper.getTextFromElement(dataElements[i])) ? "newyear" : "extra";
+            columnIndexes[type] = i;
+        }
+        return columnIndexes;
+    }
+
+    private isNewYear(text: string): boolean {
+        const newyearMatchers = ["New Year", "Neujahr", "元旦", "Nytårsdag", "Jour de l'an", "Capodanno", "Nowy Rok", "Новый год", "Nyårsdagen"];
+        if (text)
+        {
+            for (const matcher of newyearMatchers)
+            {
+                if (text.toLowerCase().startsWith(matcher.toLowerCase())) {
+                    console.log(`New year is ${text}`);
+                    return true;
+                }
+            }
+        }
+        console.log(`New year is not ${text}`);
+        return false;
     }
 
     private extractCompendiumStatus(compendiumDom): { [eventName: string]: SpecialEventTimes } {
