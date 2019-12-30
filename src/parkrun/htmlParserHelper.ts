@@ -1,5 +1,4 @@
-export class HtmlParserHelper
-{
+export class HtmlParserHelper {
     public static findElementsInHtml(dom, elementName) {
         const elements = dom.filter((n) => n.type === "tag");
         const tableElements = elements.filter((e) => e.name === elementName).concat(elements.filter((e) => e.children).map((e) => this.findElementsInHtml(e.children, elementName)));

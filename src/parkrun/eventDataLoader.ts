@@ -2,6 +2,7 @@ import https = require("https");
 import * as parkrun from "../parkrun/model/index.js";
 import { ParkrunDataLoader } from "./parkrunDataLoader";
 import Countries = require("./countries.json");
+import { CancellationLoader } from "./cancellationLoader.js";
 
 export class EventDataLoader {
 
@@ -96,20 +97,34 @@ export class EventDataLoader {
         });
     }
 
+    private populateWorldOrCountry(allCountries, countryName) {
+        if (countryName.toLowerCase() === "world") {
+            const world: parkrun.Country = {
+                name: "World",
+                countryCode: 0,
+                url: "https://www.parkrun.com/",
+                events: [].concat.apply([], allCountries.map((c) => c.events))
+            };
+            return world;
+        }
+        else {
+            return allCountries.find((c) => c.name.toLowerCase() === countryName.toLowerCase());
+        }
+    }
+
     public loadRegion(countryName): Promise<parkrun.Country> {
         const geoDataFunction = (allCountries) => {
             console.log(`Filtering for country ${countryName}`);
-            if (countryName.toLowerCase() === "world") {
-                const world: parkrun.Country = {
-                    name: "World",
-                    countryCode: 0,
-                    url: "https://www.parkrun.com/",
-                    events: [].concat.apply([], allCountries.map((c) => c.events))
-                };
-                return world;
+
+            const world = this.populateWorldOrCountry(allCountries, countryName);
+
+            try {
+                const cancellationLoader = new CancellationLoader();
+                return cancellationLoader.decorateEvents(world);
             }
-            else {
-                return allCountries.find((c) => c.name.toLowerCase() === countryName.toLowerCase());
+            catch (err) {
+                console.error('Failed to decorate cancellations');
+                return world;
             }
         };
         return this.promiseGeoData<parkrun.Country>(geoDataFunction);
@@ -117,7 +132,7 @@ export class EventDataLoader {
 
     public loadCountries(): Promise<parkrun.Country[]> {
         const geoDataFunction = (allCountries: parkrun.Country[]) => {
-            allCountries.forEach((c) => delete(c.events));
+            allCountries.forEach((c) => delete (c.events));
             return allCountries;
         };
         return this.promiseGeoData<parkrun.Country[]>(geoDataFunction);

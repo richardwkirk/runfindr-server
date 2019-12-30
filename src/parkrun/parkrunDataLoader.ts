@@ -1,12 +1,32 @@
+import { Parser } from "htmlparser2";
+
 const https = require("https");
 const htmlparser = require("htmlparser2");
 
-const NodeCache = require( "node-cache" );
+const NodeCache = require("node-cache");
 const parkrunCache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
+
+export interface ParserFactory {
+    createParser(resolve, reject): Parser;
+}
+
+export class DomHandlerParserFactory implements ParserFactory {
+    public createParser(resolve, reject) {
+        const handler = new htmlparser.DomHandler(function (err, dom) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(dom);
+            }
+        });
+        return new Parser(handler);
+    }
+}
 
 export class ParkrunDataLoader {
 
-    private promiseParkrunData(url) {
+    private promiseParkrunData(url): Promise<string> {
         const data = "";
         return new Promise((resolve, reject) => {
             try {
@@ -43,25 +63,23 @@ export class ParkrunDataLoader {
         });
     }
 
-    private promiseHtml(url) {
+    private promiseHtml(url: string, parserFactory: ParserFactory) {
         return new Promise((resolve, reject) => {
             try {
-                this.promiseParkrunData(url).then((data) => {
-                    const handler = new htmlparser.DomHandler(function(err, dom) {
-                        if (err) {
-                            reject(err);
-                        }
-                        else {
-                            resolve(dom);
-                        }
-                    });
-                    const parser = new htmlparser.Parser(handler);
-                    parser.write(data);
-                    parser.end();
+                this.promiseParkrunData(url).then((data: string) => {
+                    try {
+                        const parser = parserFactory.createParser(resolve, reject);
+                        parser.write(data);
+                        parser.end();
+                    }
+                    catch (err) {
+                        console.error(`ERROR: ${err}`);
+                        reject(err);
+                    }
                 });
             }
             catch (err) {
-                console.log(`ERROR: ${err}`);
+                console.error(`ERROR: ${err}`);
                 reject(err);
             }
         });
@@ -71,8 +89,8 @@ export class ParkrunDataLoader {
         return this.promiseParkrunData(url);
     }
 
-    public loadHtml(url) {
-        return this.promiseHtml(url);
+    public loadHtml(url, parserFactory?: ParserFactory) {
+        return this.promiseHtml(url, parserFactory || new DomHandlerParserFactory());
     }
 
 }

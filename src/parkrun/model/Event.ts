@@ -1,29 +1,33 @@
 import { Location } from "./Location";
 
 export interface SpecialEventTimes {
+  extra: string;
 
-    extra: string;
+  newyear: string;
+}
 
-    newyear: string;
+export interface Cancellation {
+  date: Date;
 
+  reason: string;
 }
 
 export interface Event {
+  eventName: string;
 
-    eventName: string;
+  shortName: string;
 
-    shortName: string;
+  longName: string;
 
-    longName: string;
+  id: number;
 
-    id: number;
+  locationName: string;
 
-    locationName: string;
+  location: Location;
 
-    location: Location;
+  url: string;
 
-    url: string;
+  specialEventTimes?: SpecialEventTimes;
 
-    specialEventTimes?: SpecialEventTimes;
-
+  cancellations?: Cancellation[];
 }
