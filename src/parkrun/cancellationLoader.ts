@@ -95,6 +95,7 @@ export class CancellationLoader {
           for (const event of country.events) {
             event.cancellations = events[event.longName];
           }
+          country.cancellationsLoaded = true;
           resolve(country);
         },
         (err: any) => {

@@ -29,7 +29,8 @@ export class EventDataLoader {
                 west: countryDetail.bounds[0]
             },
             url: `https://${countryDetail.url}`,
-            events: []
+            events: [],
+            cancellationsLoaded: false
         };
     }
 
@@ -103,7 +104,8 @@ export class EventDataLoader {
                 name: "World",
                 countryCode: 0,
                 url: "https://www.parkrun.com/",
-                events: [].concat.apply([], allCountries.map((c) => c.events))
+                events: [].concat.apply([], allCountries.map((c) => c.events)),
+                cancellationsLoaded: false
             };
             return world;
         }

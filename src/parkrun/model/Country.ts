@@ -9,6 +9,8 @@ export interface Country {
 
     specialEvent?: string;
 
+    cancellationsLoaded: boolean;
+
     bounds?: {
         north: number,
         east: number,
