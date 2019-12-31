@@ -7,7 +7,7 @@ export interface SpecialEventTimes {
 }
 
 export interface Cancellation {
-  date: Date;
+  date: string;
 
   reason: string;
 }
