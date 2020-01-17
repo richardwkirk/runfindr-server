@@ -16,29 +16,30 @@ export class CancallationParserFactory implements ParserFactory {
       {
         onopentag(name, attribs) {
           if (name === "h1") {
-            parsingType = 'date';
+            parsingType = "date";
           }
           else if (name === "a") {
-            parsingType = 'event';
+            parsingType = "event";
           }
           else {
             parsingType = null;
           }
         },
         onclosetag() {
-          if (parsingType === 'event') {
-            parsingType = 'reason';
+          if (parsingType === "event") {
+            parsingType = "reason";
           }
         },
         ontext(text) {
-          if (text && parsingType !== 'unknown') {
-            if (parsingType === 'date' && text.match(dateRegex)) {
+          if (text && parsingType !== "unknown") {
+            if (parsingType === "date" && text.match(dateRegex)) {
               date = text;
             }
-            else if (parsingType === 'event') {
+            else if (parsingType === "event") {
               event = text;
             }
-            else if (parsingType === 'reason' && text.length > 2 && text.startsWith(':')) {
+            else if (parsingType === "reason" && text.length > 2 && text.startsWith(":")) {
+              // console.log(`${event} (${date}) ${text}`);
               if (date && event) {
                 if (!cancellations.hasOwnProperty(event)) {
                   cancellations[event] = [];
@@ -47,7 +48,6 @@ export class CancallationParserFactory implements ParserFactory {
               }
             }
             else {
-              date = null;
               event = null;
             }
           }
@@ -63,10 +63,6 @@ export class CancallationParserFactory implements ParserFactory {
 }
 
 export class CancellationLoader {
-
-  private extractCancellationDataFromDom() {
-
-  }
 
   private extractCancellations(data): { [eventName: string]: Cancellation[] } {
     return data;
@@ -91,9 +87,11 @@ export class CancellationLoader {
   public decorateEvents(country: Country): Promise<Country> {
     return new Promise<Country>((resolve, reject) => {
       this.loadCancellations(country).then(
-        events => {
+        (events) => {
           for (const event of country.events) {
-            event.cancellations = events[event.longName];
+            if (events.hasOwnProperty(event.longName)) {
+              event.cancellations = events[event.longName];
+            }
           }
           country.cancellationsLoaded = true;
           resolve(country);
