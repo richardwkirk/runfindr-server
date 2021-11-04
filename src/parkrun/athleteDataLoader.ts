@@ -3,8 +3,8 @@ import { HtmlParserHelper } from "./htmlParserHelper";
 
 export class AthleteDataLoader {
 
-    private matchTableByCaption(table, caption) {
-        return table.children.filter((e) => e.name === "caption" && e.children && e.children[0].data === caption).length > 0;
+    private matchTableByCaption(table, captionRegex) {
+        return table.children.filter((e) => e.name === "caption" && e.children && e.children[0].data.match(captionRegex)).length > 0;
     }
 
     private extractResults(table) {
@@ -51,7 +51,7 @@ export class AthleteDataLoader {
     }
 
     private createAthlete(athleteId, historyDom, summaryDom) {
-        const resultsTable = HtmlParserHelper.findElementsInHtml(historyDom, "table").filter((t) => this.matchTableByCaption(t, "All Results"));
+        const resultsTable = HtmlParserHelper.findElementsInHtml(historyDom, "table").filter((t) => this.matchTableByCaption(t, /All\s+Results/));
         const results = this.extractResults(resultsTable);
         results.reverse();
 
@@ -83,8 +83,8 @@ export class AthleteDataLoader {
         return new Promise((resolve, reject) => {
             try {
                 const parkrunDataLoader = new ParkrunDataLoader();
-                parkrunDataLoader.loadHtml(`https://www.parkrun.org.uk/results/athleteeventresultshistory/?athleteNumber=${athleteId}&eventNumber=0`).then((historyDom) => {
-                    parkrunDataLoader.loadHtml(`https://www.parkrun.org.uk/results/athleteresultshistory/?athleteNumber=${athleteId}`).then((summaryDom) => {
+                parkrunDataLoader.loadHtml(`https://www.parkrun.org.uk/parkrunner/${athleteId}/all/`).then((historyDom) => {
+                    parkrunDataLoader.loadHtml(`https://www.parkrun.org.uk/parkrunner/${athleteId}/`).then((summaryDom) => {
                         resolve(this.createAthlete(athleteId, historyDom, summaryDom));
                     });
                 });

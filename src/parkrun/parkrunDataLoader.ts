@@ -27,7 +27,6 @@ export class DomHandlerParserFactory implements ParserFactory {
 export class ParkrunDataLoader {
 
     private promiseParkrunData(url): Promise<string> {
-        const data = "";
         return new Promise((resolve, reject) => {
             try {
                 parkrunCache.get(url, (err, value) => {
@@ -46,14 +45,29 @@ export class ParkrunDataLoader {
         });
     }
 
-    private getParkrunData(url, resolve, reject) {
-        console.log(`GET request to [${url}]`);
+    private getParkrunData(urlString: string, resolve, reject) {
+        console.log(`GET request to [${urlString}]`);
+        
+        const url = new URL(urlString);
+        const options = {
+            hostname: url.hostname,
+            path: url.pathname,
+            headers: { 
+                'Referer': urlString,
+                'Host': url.hostname
+            }
+        };
+
         let data = "";
-        https.get(url, (res) => {
+        https.get(options, (res) => {
+            if (res.statusCode !== 200) {
+                console.log("statusCode: ", res.statusCode);
+                console.log("headers: ", res.headers);
+            }
             res.setEncoding("utf8");
             res.on("data", (chunk) => data += chunk);
             res.on("end", () => {
-                parkrunCache.set(url, data);
+                parkrunCache.set(urlString, data);
                 resolve(data);
             });
             res.on("error", (e) => {
