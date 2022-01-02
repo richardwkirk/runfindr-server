@@ -54,7 +54,8 @@ export class ParkrunDataLoader {
             path: url.pathname,
             headers: { 
                 'Referer': urlString,
-                'Host': url.hostname
+                'Host': url.hostname,
+                'User-Agent': 'javascript',
             }
         };
 
