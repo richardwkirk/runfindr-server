@@ -53,7 +53,9 @@ export class ParkrunDataLoader {
             hostname: url.hostname,
             path: url.pathname,
             headers: { 
-                'User-Agent': 'javascript',
+                'Referer': urlString,
+                'Host': url.hostname,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0',
             }
         };
 
